@@ -1,0 +1,384 @@
+{
+	"name": "multistep form",
+	"flow": [
+		{
+			"id": 1,
+			"module": "gateway:CustomWebHook",
+			"version": 1,
+			"parameters": {
+				"hook": 0000,
+				"maxResults": 1
+			},
+			"mapper": {},
+			"metadata": {
+				"designer": {
+					"x": 0,
+					"y": 0
+				},
+				"restore": {
+					"parameters": {
+						"hook": {
+							"data": {
+								"editable": "true"
+							},
+							"label": "add your webhook"
+						}
+					}
+				},
+				"parameters": [
+					{
+						"name": "hook",
+						"type": "hook:gateway-webhook",
+						"label": "Webhook",
+						"required": true
+					},
+					{
+						"name": "maxResults",
+						"type": "number",
+						"label": "Maximum number of results"
+					}
+				],
+				"interface": [
+					{
+						"name": "text",
+						"type": "text"
+					}
+				]
+			}
+		},
+		{
+			"id": 4,
+			"module": "util:SetVariables",
+			"version": 1,
+			"parameters": {},
+			"mapper": {
+				"scope": "roundtrip",
+				"variables": [
+					{
+						"name": "step",
+						"value": "{{ifempty(1.step; 1)}}"
+					},
+					{
+						"name": "submit_name",
+						"value": "{{1.submit_name}}"
+					},
+					{
+						"name": "submit_email",
+						"value": "{{1.submit_email}}"
+					},
+					{
+						"name": "submit_notes",
+						"value": "{{1.submit_notes}}"
+					}
+				]
+			},
+			"metadata": {
+				"designer": {
+					"x": 300,
+					"y": 0
+				},
+				"restore": {
+					"expect": {
+						"scope": {
+							"label": "One cycle"
+						},
+						"variables": {
+							"items": [null, null, null, null]
+						}
+					}
+				},
+				"expect": [
+					{
+						"name": "variables",
+						"spec": [
+							{
+								"name": "name",
+								"type": "text",
+								"label": "Variable name",
+								"required": true
+							},
+							{
+								"name": "value",
+								"type": "any",
+								"label": "Variable value"
+							}
+						],
+						"type": "array",
+						"label": "Variables"
+					},
+					{
+						"name": "scope",
+						"type": "select",
+						"label": "Variable lifetime",
+						"required": true,
+						"validate": {
+							"enum": ["roundtrip", "execution"]
+						}
+					}
+				],
+				"interface": [
+					{
+						"name": "step",
+						"type": "any",
+						"label": "step"
+					},
+					{
+						"name": "submit_name",
+						"type": "any",
+						"label": "submit_name"
+					},
+					{
+						"name": "submit_email",
+						"type": "any",
+						"label": "submit_email"
+					},
+					{
+						"name": "submit_notes",
+						"type": "any",
+						"label": "submit_notes"
+					}
+				]
+			}
+		},
+		{
+			"id": 6,
+			"module": "util:SetVariables",
+			"version": 1,
+			"parameters": {},
+			"mapper": {
+				"scope": "roundtrip",
+				"variables": [
+					{
+						"name": "header",
+						"value": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Multi-Step Form</title>\n    <style>\n        :root {\n            --primary-color: #1B365D;\n            --accent-color: #FF7F41;\n            --text-color: #333;\n            --background-color: #f5f5f5;\n            --step-size: 3rem;\n        }\n        body {\n            font-family: system-ui, -apple-system, sans-serif;\n            line-height: 1.6;\n            margin: 0;\n            padding: 2rem;\n            background: var(--background-color);\n            color: var(--text-color);\n        }\n        .container {\n            max-width: 600px;\n            margin: 0 auto;\n            background: white;\n            padding: 2rem;\n            border-radius: 8px;\n            box-shadow: 0 2px 4px rgba(0,0,0,0.1);\n        }\n        .step-number {\n            display: inline-flex;\n            align-items: center;\n            justify-content: center;\n            width: var(--step-size);\n            height: var(--step-size);\n            background: var(--primary-color);\n            color: white;\n            border-radius: 50%;\n            font-size: 1.5rem;\n            font-weight: bold;\n            margin-bottom: 1rem;\n        }\n        .step-title {\n            font-size: 1.75rem;\n            margin: 0 0 1.5rem;\n            color: var(--primary-color);\n        }\n        .form-group {\n            margin-bottom: 1.5rem;\n        }\n        label {\n            display: block;\n            margin-bottom: 0.5rem;\n            font-weight: 500;\n            color: var(--primary-color);\n        }\n        input, textarea {\n            width: 100%;\n            padding: 0.75rem;\n            border: 1px solid #ddd;\n            border-radius: 4px;\n            font-size: 1rem;\n            transition: border-color 0.2s;\n        }\n        input:focus, textarea:focus {\n            outline: none;\n            border-color: var(--accent-color);\n            box-shadow: 0 0 0 2px rgba(255,127,65,0.1);\n        }\n        button {\n            background: var(--primary-color);\n            color: white;\n            border: none;\n            padding: 0.75rem 1.5rem;\n            border-radius: 4px;\n            font-size: 1rem;\n            cursor: pointer;\n            transition: all 0.2s;\n            position: relative;\n            overflow: hidden;\n        }\n        button:hover {\n            background: var(--accent-color);\n        }\n        button:active {\n            transform: translateY(1px);\n        }\n        .greeting {\n            color: var(--accent-color) !important;\n            font-weight: 500;\n        }\n    </style>\n</head>\n<body>\n    <div class=\"container\">\n"
+					},
+					{
+						"name": "footer",
+						"value": "    </div>\n</body>\n</html>"
+					}
+				]
+			},
+			"metadata": {
+				"designer": {
+					"x": 600,
+					"y": 0
+				},
+				"restore": {
+					"expect": {
+						"scope": {
+							"label": "One cycle"
+						},
+						"variables": {
+							"items": [null, null]
+						}
+					}
+				},
+				"expect": [
+					{
+						"name": "variables",
+						"spec": [
+							{
+								"name": "name",
+								"type": "text",
+								"label": "Variable name",
+								"required": true
+							},
+							{
+								"name": "value",
+								"type": "any",
+								"label": "Variable value"
+							}
+						],
+						"type": "array",
+						"label": "Variables"
+					},
+					{
+						"name": "scope",
+						"type": "select",
+						"label": "Variable lifetime",
+						"required": true,
+						"validate": {
+							"enum": ["roundtrip", "execution"]
+						}
+					}
+				],
+				"interface": [
+					{
+						"name": "header",
+						"type": "any",
+						"label": "header"
+					},
+					{
+						"name": "footer",
+						"type": "any",
+						"label": "footer"
+					}
+				]
+			}
+		},
+		{
+			"id": 7,
+			"module": "util:Switcher",
+			"version": 1,
+			"parameters": {},
+			"mapper": {
+				"input": "{{4.step}}",
+				"casesTable": [
+					{
+						"output": "<div class=\"step-number\">1</div>\n<h1 class=\"step-title\">Personal Information</h1>\n<form method=\"get\">\n    <input type=\"hidden\" name=\"step\" value=\"2\">\n    <div class=\"form-group\">\n        <label for=\"name\">Your Name</label>\n        <input type=\"text\" id=\"name\" name=\"submit_name\" value=\"{{4.submit_name}}\" required>\n    </div>\n    <div class=\"form-group\">\n        <label for=\"email\">Your Email</label>\n        <input type=\"email\" id=\"email\" name=\"submit_email\" value=\"{{4.submit_email}}\" required>\n    </div>\n    <button type=\"submit\">Continue to Step 2</button>\n</form>",
+						"pattern": "1"
+					},
+					{
+						"output": "<div class=\"step-number\">2</div>\n<h1 class=\"step-title\">Additional Information</h1>\n<p class=\"greeting\" style=\"font-size: 1.2rem; color: var(--primary-color); margin-bottom: 2rem;\">Hey {{4.submit_name}}, please tell us a bit more about yourself!</p>\n<form method=\"get\">\n    <input type=\"hidden\" name=\"step\" value=\"3\">\n    <input type=\"hidden\" name=\"submit_name\" value=\"{{4.submit_name}}\">\n    <input type=\"hidden\" name=\"submit_email\" value=\"{{4.submit_email}}\">\n    <div class=\"form-group\">\n        <label for=\"notes\">Additional Notes</label>\n        <textarea id=\"notes\" name=\"submit_notes\" rows=\"4\" required>{{4.submit_notes}}</textarea>\n    </div>\n    <div style=\"display: flex; gap: 1rem;\">\n        <a href=\"?step=1&submit_name={{4.submit_name}}&submit_email={{4.submit_email}}\" style=\"background: var(--accent-color); color: white; text-decoration: none; padding: 0.75rem 1.5rem; border-radius: 4px; font-size: 1rem; cursor: pointer; transition: all 0.2s;\">Back to Step 1</a>\n        <button type=\"submit\">Submit Form</button>\n    </div>\n</form>",
+						"pattern": "2"
+					},
+					{
+						"output": "<div class=\"step-number\">3</div>\n<h1 class=\"step-title\">Thank You!</h1>\n<div style=\"text-align: center; padding: 2rem 0;\">\n    <div style=\"font-size: 4rem; margin-bottom: 1rem;\">✨</div>\n    <p style=\"font-size: 1.2rem; margin-bottom: 2rem; color: var(--accent-color);\">Thank you for your submission, {{4.submit_name}}!</p>\n    <div class=\"form-group\" style=\"text-align: left; background: var(--background-color); padding: 1.5rem; border-radius: 8px;\">\n        <h2 style=\"margin-top: 0; font-size: 1.2rem; color: var(--primary-color);\">Your Submission Details:</h2>\n        <p><strong>Name:</strong> {{4.submit_name}}</p>\n        <p><strong>Email:</strong> {{4.submit_email}}</p>\n        <p><strong>Notes:</strong> {{4.submit_notes}}</p>\n    </div>\n    <a href=\"?step=1\" style=\"display: inline-block; background: var(--accent-color); color: white; text-decoration: none; padding: 0.75rem 1.5rem; border-radius: 4px; font-size: 1rem; margin-top: 2rem; cursor: pointer; transition: all 0.2s;\">Submit Another Response</a>\n</div>",
+						"pattern": "3"
+					}
+				],
+				"elseOutput": "step 1",
+				"useRegExpMatch": false
+			},
+			"metadata": {
+				"designer": {
+					"x": 900,
+					"y": 0
+				},
+				"restore": {
+					"expect": {
+						"casesTable": {
+							"mode": "chose",
+							"items": [null, null, null]
+						}
+					}
+				},
+				"expect": [
+					{
+						"name": "input",
+						"type": "text",
+						"label": "Input"
+					},
+					{
+						"name": "useRegExpMatch",
+						"type": "boolean",
+						"label": "Use regular expressions to match",
+						"required": true
+					},
+					{
+						"name": "casesTable",
+						"spec": [
+							{
+								"name": "pattern",
+								"type": "text",
+								"label": "Pattern"
+							},
+							{
+								"name": "output",
+								"type": "any",
+								"label": "Output"
+							}
+						],
+						"type": "array",
+						"label": "Cases",
+						"required": true
+					},
+					{
+						"name": "elseOutput",
+						"type": "any",
+						"label": "Else"
+					}
+				]
+			}
+		},
+		{
+			"id": 3,
+			"module": "gateway:WebhookRespond",
+			"version": 1,
+			"parameters": {},
+			"mapper": {
+				"body": "{{6.header}}\n{{7.output}}\n{{6.footer}}",
+				"status": "200",
+				"headers": []
+			},
+			"metadata": {
+				"designer": {
+					"x": 1200,
+					"y": 0
+				},
+				"restore": {
+					"expect": {
+						"headers": {
+							"mode": "chose"
+						}
+					}
+				},
+				"expect": [
+					{
+						"name": "status",
+						"type": "uinteger",
+						"label": "Status",
+						"required": true,
+						"validate": {
+							"min": 100
+						}
+					},
+					{
+						"name": "body",
+						"type": "any",
+						"label": "Body"
+					},
+					{
+						"name": "headers",
+						"spec": [
+							{
+								"name": "key",
+								"type": "text",
+								"label": "Key",
+								"required": true,
+								"validate": {
+									"max": 256
+								}
+							},
+							{
+								"name": "value",
+								"type": "text",
+								"label": "Value",
+								"required": true,
+								"validate": {
+									"max": 4096
+								}
+							}
+						],
+						"type": "array",
+						"label": "Custom headers",
+						"validate": {
+							"maxItems": 16
+						}
+					}
+				]
+			}
+		}
+	],
+	"metadata": {
+		"instant": true,
+		"version": 1,
+		"scenario": {
+			"roundtrips": 1,
+			"maxErrors": 3,
+			"autoCommit": true,
+			"autoCommitTriggerLast": true,
+			"sequential": false,
+			"slots": null,
+			"confidential": false,
+			"dataloss": false,
+			"dlq": false,
+			"freshVariables": false
+		},
+		"designer": {
+			"orphans": []
+		},
+		"zone": "eu1.make.com",
+		"notes": []
+	}
+}
