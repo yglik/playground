@@ -1,0 +1,463 @@
+{
+    "name": "html form serve",
+    "flow": [
+        {
+            "id": 1,
+            "module": "gateway:CustomWebHook",
+            "version": 1,
+            "parameters": {
+                "hook": 3249202,
+                "maxResults": 1
+            },
+            "mapper": {},
+            "metadata": {
+                "designer": {
+                    "x": 0,
+                    "y": 0
+                },
+                "restore": {
+                    "parameters": {
+                        "hook": {
+                            "data": {
+                                "editable": "true"
+                            },
+                            "label": "html form server"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "hook",
+                        "type": "hook:gateway-webhook",
+                        "label": "Webhook",
+                        "required": true
+                    },
+                    {
+                        "name": "maxResults",
+                        "type": "number",
+                        "label": "Maximum number of results"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 2,
+            "module": "util:SetVariables",
+            "version": 1,
+            "parameters": {},
+            "mapper": {
+                "variables": [
+                    {
+                        "name": "step",
+                        "value": "{{ifempty(1.step; 1)}}"
+                    },
+                    {
+                        "name": "name",
+                        "value": "{{1.name}}"
+                    },
+                    {
+                        "name": "mountain",
+                        "value": "{{1.mountain}}"
+                    },
+                    {
+                        "name": "mountain_image",
+                        "value": "{{switch(1.mountain; \"חרמון\"; \"https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/PikiWiki_Israel_42391_Mt._Hermon.JPG/800px-PikiWiki_Israel_42391_Mt._Hermon.JPG\"; \"גילבוע\"; \"https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/PikiWiki_Israel_46287_gilboa.JPG/800px-PikiWiki_Israel_46287_gilboa.JPG\"; \"כרמל\"; \"https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/PikiWiki_Israel_17533_Geography_of_Israel.JPG/800px-PikiWiki_Israel_17533_Geography_of_Israel.JPG\"; \"ארבל\"; \"https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/PikiWiki_Israel_19736_Geography_of_Israel.jpg/800px-PikiWiki_Israel_19736_Geography_of_Israel.jpg\"; \"סיני\"; \"https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/PikiWiki_Israel_75729_the_ascent_to_mount_sinai.jpg/800px-PikiWiki_Israel_75729_the_ascent_to_mount_sinai.jpg\")}}"
+                    },
+                    {
+                        "name": "mountain_color",
+                        "value": "{{switch(1.mountain; \"חרמון\"; \"blue\"; \"כרמל\"; \"brown\"; \"גילבוע\"; \"green\"; \"סיני\"; \"brown\"; \"ארבל\"; \"red\"; \"blue\")}}"
+                    }
+                ],
+                "scope": "roundtrip"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 300,
+                    "y": 0
+                },
+                "restore": {
+                    "expect": {
+                        "variables": {
+                            "items": [
+                                null,
+                                null,
+                                null,
+                                null,
+                                null
+                            ]
+                        },
+                        "scope": {
+                            "label": "One cycle"
+                        }
+                    }
+                },
+                "expect": [
+                    {
+                        "name": "variables",
+                        "type": "array",
+                        "label": "Variables",
+                        "spec": [
+                            {
+                                "name": "name",
+                                "label": "Variable name",
+                                "type": "text",
+                                "required": true
+                            },
+                            {
+                                "name": "value",
+                                "label": "Variable value",
+                                "type": "any"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "scope",
+                        "type": "select",
+                        "label": "Variable lifetime",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "roundtrip",
+                                "execution"
+                            ]
+                        }
+                    }
+                ],
+                "interface": [
+                    {
+                        "name": "step",
+                        "label": "step",
+                        "type": "any"
+                    },
+                    {
+                        "name": "name",
+                        "label": "name",
+                        "type": "any"
+                    },
+                    {
+                        "name": "mountain",
+                        "label": "mountain",
+                        "type": "any"
+                    },
+                    {
+                        "name": "mountain_image",
+                        "label": "mountain_image",
+                        "type": "any"
+                    },
+                    {
+                        "name": "mountain_color",
+                        "label": "mountain_color",
+                        "type": "any"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 7,
+            "module": "util:Switcher",
+            "version": 1,
+            "parameters": {},
+            "mapper": {
+                "input": "{{2.step}}",
+                "casesTable": [
+                    {
+                        "output": "<!-- שלב 1: טופס -->\n<div id=\"step1\">\n    <h1>שלום לכולם!</h1>\n    <form id=\"mountainForm\">\n        <label for=\"name\">שם:</label>\n        <input type=\"text\" id=\"name\" name=\"name\" required>\n        <br>\n        <label for=\"mountain\">ההר האהוב עליך:</label>\n        <select id=\"mountain\" name=\"mountain\" required>\n            <option value=\"חרמון\">חרמון</option>\n            <option value=\"ארבל\">ארבל</option>\n            <option value=\"כרמל\">כרמל</option>\n            <option value=\"גילבוע\">גילבוע</option>\n            <option value=\"סיני\">סיני</option>\n        </select>\n        <br>\n        <button type=\"button\" id=\"submitBtn\">לחצו כאן</button>\n    </form>\n</div>",
+                        "pattern": "1"
+                    },
+                    {
+                        "output": "<!-- שלב 2: לאחר מעבר -->\n<div id=\"step2\" class=\"hidden\">\n    <h1>שלום לכולם!</h1>\n    <p>step 2!</p>\n    <p>\n        היי, <span id=\"userName\">{{2.name}}</span><br>\n        מתי ביקרת בהר <span id=\"userMountain\">{{2.mountain}}</span> לאחרונה?\n    </p>\n    <img src=\"{{2.mountain_image}}\" alt=\"תמונה מתעדכנת\" class=\"display-image\" id=\"dynamicImg\">\n    <br>\n    <button class=\"start-over-link\" id=\"startOverBtn\">להתחיל מהתחלה</button>\n</div>",
+                        "pattern": "2"
+                    }
+                ],
+                "elseOutput": "",
+                "useRegExpMatch": false
+            },
+            "metadata": {
+                "designer": {
+                    "x": 600,
+                    "y": 0
+                },
+                "restore": {
+                    "expect": {
+                        "casesTable": {
+                            "mode": "chose",
+                            "items": [
+                                null,
+                                null
+                            ]
+                        }
+                    }
+                },
+                "expect": [
+                    {
+                        "name": "input",
+                        "type": "text",
+                        "label": "Input"
+                    },
+                    {
+                        "name": "useRegExpMatch",
+                        "type": "boolean",
+                        "label": "Use regular expressions to match",
+                        "required": true
+                    },
+                    {
+                        "name": "casesTable",
+                        "spec": [
+                            {
+                                "name": "pattern",
+                                "type": "text",
+                                "label": "Pattern"
+                            },
+                            {
+                                "name": "output",
+                                "type": "any",
+                                "label": "Output"
+                            }
+                        ],
+                        "type": "array",
+                        "label": "Cases",
+                        "required": true
+                    },
+                    {
+                        "name": "elseOutput",
+                        "type": "any",
+                        "label": "Else"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 5,
+            "module": "util:SetVariables",
+            "version": 1,
+            "parameters": {},
+            "mapper": {
+                "variables": [
+                    {
+                        "name": "html_head",
+                        "value": "<!DOCTYPE html>\n<html lang=\"he\" dir=\"rtl\">\n<head>\n    <meta charset=\"UTF-8\">\n    <title>שלום לכולם</title>\n</head>\n<body>"
+                    },
+                    {
+                        "name": "style",
+                        "value": "<style>\n:root {\n--color:{{2.mountain_color}};\n}\n    body {\n        font-family: Arial, sans-serif;\n        text-align: center;\n        background-color: #f4f8fb;\n        margin-top: 100px;\n    }\n    form {\n        display: inline-block;\n        background: #fff;\n        padding: 32px 40px;\n        border-radius: 14px;\n        box-shadow: 0 0 24px #d6e4f5;\n    }\n    label {\n        font-size: 1em;\n        margin-bottom: 8px;\n        display: block;\n    }\n    input, select {\n        font-size: 1em;\n        padding: 10px;\n        width: 220px;\n        border-radius: 6px;\n        border: 1px solid #b9bfd1;\n        margin-bottom: 14px;\n    }\n    button {\n        padding: 12px 28px;\n        font-size: 1.1em;\n        background-color: var(--color);\n        color: white;\n        border: none;\n        border-radius: 10px;\n        cursor: pointer;\n        margin-top: 18px;\n        transition: background 0.2s;\n    }\n    .start-over-link {\n        font-size: 0.93em;\n        background: var(--color);\n        color: white;\n        border: none;\n        text-decoration: underline;\n        cursor: pointer;\n        padding: 4px 8px;\n        margin-top: 18px;\n    }\n    .display-image {\n        display: block;\n        margin: 32px auto 16px auto;\n        max-width: 320px;\n        max-height: 220px;\n        border-radius: 10px;\nborder:4px solid var(--color);\n        background: #ececec;\n    }\n</style>"
+                    },
+                    {
+                        "name": "content",
+                        "value": "{{7.output}}"
+                    },
+                    {
+                        "name": "script",
+                        "value": "<script>\n// step 1: שליחת טופס עם כל השדות לכל שלב שני\ndocument.querySelector(\"#submitBtn\")?.addEventListener(\"click\", function () {\n    const form = document.querySelector(\"#mountainForm\");\n    const elements = form.querySelectorAll(\"input, select, textarea\");\n    const params = {};\n\n    elements.forEach(el => {\n        if (el.name && !el.disabled && el.type !== \"button\" && el.type !== \"submit\") {\n            params[el.name] = el.value.trim();\n        }\n    });\n\n    const url = new URL(\"https://hook.eu2.make.com/pljomm0jfortr5pmc8c7rfi91hbensqf\");\n    url.searchParams.set(\"step\", \"2\");\n    Object.keys(params).forEach(key => {\n        url.searchParams.set(key, params[key]);\n    });\n\n    window.location.href = url.toString();\n});\n\n// step 2: התחול מחדש (כולל העברה ל-step=1)\ndocument.querySelector(\"#startOverBtn\")?.addEventListener(\"click\", function (e) {\n    e.preventDefault();\n    const url = new URL(\"https://hook.eu2.make.com/pljomm0jfortr5pmc8c7rfi91hbensqf\");\n    url.searchParams.set(\"step\", \"1\");\n    window.location.href = url.toString();\n});\n\n// להכניס דינאמית תמונה בשלב 2:\n // document.getElementById(\"dynamicImg\").src = \"IMAGE_URL_HERE\";\n\n// דוגמה: להסתיר/להציף שלבים לפי תנאי URL\n// אפשר להכניס לוגיקה שתקבע איזה div יוצג עפ\"י פרמטרים/שלב\n\n</script>\n​"
+                    },
+                    {
+                        "name": "html_end",
+                        "value": "</body>\n</html>"
+                    }
+                ],
+                "scope": "roundtrip"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 900,
+                    "y": 0
+                },
+                "restore": {
+                    "expect": {
+                        "variables": {
+                            "items": [
+                                {
+                                    "name": {
+                                        "collapsed": true
+                                    },
+                                    "value": {
+                                        "collapsed": true
+                                    }
+                                },
+                                {
+                                    "name": {
+                                        "collapsed": true
+                                    },
+                                    "value": {
+                                        "collapsed": true
+                                    }
+                                },
+                                {
+                                    "name": {
+                                        "collapsed": true
+                                    },
+                                    "value": {
+                                        "collapsed": true
+                                    }
+                                },
+                                {
+                                    "name": {
+                                        "collapsed": true
+                                    }
+                                },
+                                {
+                                    "name": {
+                                        "collapsed": true
+                                    },
+                                    "value": {
+                                        "collapsed": true
+                                    }
+                                }
+                            ]
+                        },
+                        "scope": {
+                            "label": "One cycle"
+                        }
+                    }
+                },
+                "expect": [
+                    {
+                        "name": "variables",
+                        "type": "array",
+                        "label": "Variables",
+                        "spec": [
+                            {
+                                "name": "name",
+                                "label": "Variable name",
+                                "type": "text",
+                                "required": true
+                            },
+                            {
+                                "name": "value",
+                                "label": "Variable value",
+                                "type": "any"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "scope",
+                        "type": "select",
+                        "label": "Variable lifetime",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "roundtrip",
+                                "execution"
+                            ]
+                        }
+                    }
+                ],
+                "interface": [
+                    {
+                        "name": "html_head",
+                        "label": "html_head",
+                        "type": "any"
+                    },
+                    {
+                        "name": "style",
+                        "label": "style",
+                        "type": "any"
+                    },
+                    {
+                        "name": "content",
+                        "label": "content",
+                        "type": "any"
+                    },
+                    {
+                        "name": "script",
+                        "label": "script",
+                        "type": "any"
+                    },
+                    {
+                        "name": "html_end",
+                        "label": "html_end",
+                        "type": "any"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 6,
+            "module": "gateway:WebhookRespond",
+            "version": 1,
+            "parameters": {},
+            "mapper": {
+                "body": "{{5.html_head}}\n{{5.style}}\n{{5.content}}\n{{5.script}}\n{{5.html_end}}",
+                "status": "200",
+                "headers": []
+            },
+            "metadata": {
+                "designer": {
+                    "x": 1200,
+                    "y": 0
+                },
+                "restore": {
+                    "expect": {
+                        "headers": {
+                            "mode": "chose"
+                        }
+                    }
+                },
+                "expect": [
+                    {
+                        "name": "status",
+                        "type": "uinteger",
+                        "label": "Status",
+                        "required": true,
+                        "validate": {
+                            "min": 100
+                        }
+                    },
+                    {
+                        "name": "body",
+                        "type": "any",
+                        "label": "Body"
+                    },
+                    {
+                        "name": "headers",
+                        "spec": [
+                            {
+                                "name": "key",
+                                "type": "text",
+                                "label": "Key",
+                                "required": true,
+                                "validate": {
+                                    "max": 256
+                                }
+                            },
+                            {
+                                "name": "value",
+                                "type": "text",
+                                "label": "Value",
+                                "required": true,
+                                "validate": {
+                                    "max": 4096
+                                }
+                            }
+                        ],
+                        "type": "array",
+                        "label": "Custom headers",
+                        "validate": {
+                            "maxItems": 16
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+    "metadata": {
+        "instant": true,
+        "version": 1,
+        "scenario": {
+            "roundtrips": 1,
+            "maxErrors": 3,
+            "autoCommit": true,
+            "autoCommitTriggerLast": true,
+            "sequential": false,
+            "slots": null,
+            "confidential": false,
+            "dataloss": false,
+            "dlq": false,
+            "freshVariables": false
+        },
+        "designer": {
+            "orphans": []
+        },
+        "zone": "eu2.make.com",
+        "notes": []
+    }
+}
